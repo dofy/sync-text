@@ -32,7 +32,7 @@ const Page: React.FC<IPageProps> = ({ title, uuid }) => {
         <QRCode size="medium" value={origin} />
       </div>
       <div className="text-xl flex-grow self-center">
-        <Link href={`/${uuid}`}> Enter &gt;&gt; </Link>
+        <Link href={`/create/${uuid}`}> Enter &gt;&gt; </Link>
       </div>
       <Footer domain={domain} origin={origin} />
     </main>
