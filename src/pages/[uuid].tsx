@@ -47,13 +47,9 @@ const Page: React.FC<IPageProps> = ({ title, uuid, oldid, newid }) => {
 }
 
 export const getServerSideProps: GetServerSideProps<IPageProps> = async ({ query }) => {
+  const { uuid } = query
   try {
-    const { data } = await axios.get('/api/create', {
-      params: {
-        uuid: query.uuid
-      }
-    })
-
+    const { data } = await axios.get(`/api/create/${uuid}`)
     return {
       props: {
         ...data,
