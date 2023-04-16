@@ -51,7 +51,6 @@ const Page: React.FC<IPageProps> = ({ title, oldid, newid }) => {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { uuid } = context.query;
   try {
-
     const res = await axios.get('/api/create', {
       params: {
         uuid
@@ -59,6 +58,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     })
 
     const { newid, oldid } = res.data
+
     return {
       props: {
         newid,
@@ -68,7 +68,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
   } catch (e) {
     return {
-      notFound: true,
+      props: {
+        newid: '',
+        oldid: '',
+        title: process.env.TITLE,
+      }
     }
   }
 }
