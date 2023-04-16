@@ -3,7 +3,6 @@ import QRCode from "@/components/QRCode";
 import axios from "axios";
 import { GetServerSideProps } from "next";
 import { Azeret_Mono } from "next/font/google";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 type Data = {
@@ -12,6 +11,7 @@ type Data = {
 }
 
 interface IPageProps extends Data {
+  uuid: string;
   title: string;
 }
 
@@ -20,9 +20,7 @@ const font = Azeret_Mono({
   subsets: ["latin"],
 })
 
-const Page: React.FC<IPageProps> = ({ title, oldid, newid }) => {
-  const router = useRouter()
-  const { uuid } = router.query
+const Page: React.FC<IPageProps> = ({ title, uuid, oldid, newid }) => {
   const [origin, setOrigin] = useState<string>('')
   const [domain, setDomain] = useState<string>('')
 
@@ -40,7 +38,7 @@ const Page: React.FC<IPageProps> = ({ title, oldid, newid }) => {
       </div>
       <div className="flex-grow">
         ID: {uuid}
-        <textarea className=" h-full w-full" defaultValue={`${oldid}, ${newid}`} />
+        <textarea className=" h-full w-full" />
         {oldid}, {newid}
       </div>
       <Footer domain={domain} origin={origin} />
@@ -48,31 +46,24 @@ const Page: React.FC<IPageProps> = ({ title, oldid, newid }) => {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { uuid } = context.query;
+export const getServerSideProps: GetServerSideProps<IPageProps> = async ({ query }) => {
   try {
-    const res = await axios.get('/api/create', {
+    const { data } = await axios.get('/api/create', {
       params: {
-        uuid
+        uuid: query.uuid
       }
     })
 
-    const { newid, oldid } = res.data
-
     return {
       props: {
-        newid,
-        oldid,
+        ...data,
+        uuid: query.uuid,
         title: process.env.TITLE,
       }
     }
   } catch (e) {
     return {
-      props: {
-        newid: '',
-        oldid: '',
-        title: process.env.TITLE,
-      }
+      notFound: true
     }
   }
 }
