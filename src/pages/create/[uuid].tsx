@@ -5,36 +5,31 @@ import { GetServerSideProps } from "next";
 import { Azeret_Mono } from "next/font/google";
 import { useEffect, useState } from "react";
 
-type Data = {
-  uuid: string;
-  content: string;
-}
-
-interface IPageProps {
-  uuid: string;
-  title: string;
-}
-
 const font = Azeret_Mono({
   weight: "200",
   subsets: ["latin"],
 })
 
-const syncText = async (uuid: string): Promise<Data> => {
-  const res = await axios.get<Data>(`/api/sync/${uuid}`)
+const pullText = async (uuid: string): Promise<SyncData> => {
+  const res = await axios.get<SyncData>(`/api/sync/${uuid}`)
+  return res.data
+}
+
+const pushText = async (uuid: string, content: string): Promise<SyncData> => {
+  const res = await axios.post<SyncData>(`/api/sync/${uuid}`, { content })
   return res.data
 }
 
 const Page: React.FC<IPageProps> = ({ title, uuid }) => {
   const [origin, setOrigin] = useState<string>('')
   const [domain, setDomain] = useState<string>('')
-  const [data, setData] = useState<Data>({ uuid: '', content: '' })
+  const [data, setData] = useState<SyncData>({ uuid: '', content: '' })
 
   useEffect(() => {
     const { origin, hostname } = window.location
     setOrigin(origin)
     setDomain(hostname)
-    syncText(uuid).then((data) => setData(data))
+    pullText(uuid).then((data) => setData(data))
   }, [uuid])
 
   return (
@@ -47,6 +42,7 @@ const Page: React.FC<IPageProps> = ({ title, uuid }) => {
         ID: {uuid}
         <textarea className=" h-full w-full" />
         {data.uuid}, {data.content}
+        <button onClick={() => pushText(uuid, 'test')}>Push</button>
       </div>
       <Footer domain={domain} origin={origin} />
     </main>

@@ -2,24 +2,26 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { v4 as uuidv4 } from "uuid";
 
-type BodyData = {
-  uuid: string;
-  content: string;
-};
-
-type ResData = {
-  uuid: string;
-  content: string;
-};
-
 export default function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ResData>
+  res: NextApiResponse<SyncData>
 ) {
-  const { uuid, content } = req.query as BodyData;
+  const { uuid } = req.query;
+  const { content } = req.body;
 
-  res.status(200).json({
-    uuid,
-    content: uuidv4(),
-  });
+  switch (req.method) {
+    case "POST":
+      // TODO: Save content to redis
+      return res.status(200).json({
+        uuid: uuid as string,
+        content: content as string,
+      });
+    case "GET":
+    default:
+      // TODO: Get / Create content from redis
+      return res.status(200).json({
+        uuid: uuid as string,
+        content: uuidv4(),
+      });
+  }
 }

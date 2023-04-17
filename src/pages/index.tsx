@@ -5,11 +5,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-interface IPageProps {
-  title: string;
-  uuid: string;
-}
-
 const font = Azeret_Mono({
   weight: '200',
   subsets: ['latin'],
