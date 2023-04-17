@@ -40,7 +40,7 @@ const Page: React.FC<IPageProps> = ({ title, uuid }) => {
       </div>
       <div className="flex-grow">
         ID: {uuid}
-        <textarea className=" h-full w-full" />
+        <textarea className="p-2 w-full" />
         {data.uuid}, {data.content}
         <button onClick={() => pushText(uuid, 'test')}>Push</button>
       </div>
