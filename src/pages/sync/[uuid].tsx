@@ -6,8 +6,7 @@ import { Azeret_Mono } from "next/font/google";
 import { useEffect, useState } from "react";
 
 const font = Azeret_Mono({
-  weight: "200",
-  subsets: ["latin"],
+  subsets: ['latin'],
 })
 
 const pullText = async (uuid: string): Promise<SyncData> => {
@@ -36,11 +35,13 @@ const Page: React.FC<IPageProps> = ({ title, uuid }) => {
     <main className={`${font.className} flex flex-col min-h-screen items-center justify-between p-24`}>
       <div className="text-xl my-1 underline underline-offset-4">{title}</div>
       <div>
-        <QRCode size="small" value={`${origin}/${uuid}`} />
+        <QRCode size="small" value={`${origin}/sync/${uuid}`} />
       </div>
       <div className="flex-grow">
         ID: {uuid}
-        <textarea className="p-2 w-full" />
+        <textarea rows={7}
+          className="p-2 w-full rounded-lg border border-gray-300"
+          placeholder="Enter your text which you want to be sync." />
         {data.uuid}, {data.content}
         <button onClick={() => pushText(uuid, 'test')}>Push</button>
       </div>
