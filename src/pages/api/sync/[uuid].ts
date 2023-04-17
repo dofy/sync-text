@@ -4,21 +4,22 @@ import { v4 as uuidv4 } from "uuid";
 
 type BodyData = {
   uuid: string;
+  content: string;
 };
 
 type ResData = {
-  oldid: string;
-  newid: string;
+  uuid: string;
+  content: string;
 };
 
 export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResData>
 ) {
-  const { uuid } = req.query as BodyData;
+  const { uuid, content } = req.query as BodyData;
 
   res.status(200).json({
-    oldid: uuid,
-    newid: uuidv4(),
+    uuid,
+    content: uuidv4(),
   });
 }

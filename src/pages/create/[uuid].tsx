@@ -6,11 +6,11 @@ import { Azeret_Mono } from "next/font/google";
 import { useEffect, useState } from "react";
 
 type Data = {
-  oldid: string;
-  newid: string;
+  uuid: string;
+  content: string;
 }
 
-interface IPageProps extends Data {
+interface IPageProps {
   uuid: string;
   title: string;
 }
@@ -20,15 +20,22 @@ const font = Azeret_Mono({
   subsets: ["latin"],
 })
 
-const Page: React.FC<IPageProps> = ({ title, uuid, oldid, newid }) => {
+const syncText = async (uuid: string): Promise<Data> => {
+  const res = await axios.get<Data>(`/api/sync/${uuid}`)
+  return res.data
+}
+
+const Page: React.FC<IPageProps> = ({ title, uuid }) => {
   const [origin, setOrigin] = useState<string>('')
   const [domain, setDomain] = useState<string>('')
+  const [data, setData] = useState<Data>({ uuid: '', content: '' })
 
   useEffect(() => {
     const { origin, hostname } = window.location
     setOrigin(origin)
     setDomain(hostname)
-  }, [])
+    syncText(uuid).then((data) => setData(data))
+  }, [uuid])
 
   return (
     <main className={`${font.className} flex flex-col min-h-screen items-center justify-between p-24`}>
@@ -39,27 +46,18 @@ const Page: React.FC<IPageProps> = ({ title, uuid, oldid, newid }) => {
       <div className="flex-grow">
         ID: {uuid}
         <textarea className=" h-full w-full" />
-        {oldid}, {newid}
+        {data.uuid}, {data.content}
       </div>
       <Footer domain={domain} origin={origin} />
     </main>
   )
 }
 
-export const getServerSideProps: GetServerSideProps<IPageProps> = async ({ query }) => {
-  const { uuid } = query
-  try {
-    const { data } = await axios.get(`/api/create/${uuid}`)
-    return {
-      props: {
-        ...data,
-        uuid: query.uuid,
-        title: process.env.TITLE,
-      }
-    }
-  } catch (e) {
-    return {
-      notFound: true
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  return {
+    props: {
+      uuid: query.uuid,
+      title: process.env.TITLE,
     }
   }
 }
