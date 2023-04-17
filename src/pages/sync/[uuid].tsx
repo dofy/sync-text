@@ -1,13 +1,9 @@
 import Footer from "@/components/Footer";
+import PageBox from "@/components/PageBox";
 import QRCode from "@/components/QRCode";
 import axios from "axios";
 import { GetServerSideProps } from "next";
-import { Azeret_Mono } from "next/font/google";
 import { useEffect, useState } from "react";
-
-const font = Azeret_Mono({
-  subsets: ['latin'],
-})
 
 const pullText = async (uuid: string): Promise<SyncData> => {
   const res = await axios.get<SyncData>(`/api/sync/${uuid}`)
@@ -32,11 +28,9 @@ const Page: React.FC<IPageProps> = ({ title, uuid }) => {
   }, [uuid])
 
   return (
-    <main className={`${font.className} flex flex-col min-h-screen items-center justify-between p-24`}>
+    <PageBox>
       <div className="text-xl my-1 underline underline-offset-4">{title}</div>
-      <div>
-        <QRCode size="small" value={`${origin}/sync/${uuid}`} />
-      </div>
+      <QRCode size="small" value={`${origin}/sync/${uuid}`} />
       <div className="flex-grow">
         ID: {uuid}
         <textarea rows={7}
@@ -46,7 +40,7 @@ const Page: React.FC<IPageProps> = ({ title, uuid }) => {
         <button onClick={() => pushText(uuid, 'test')}>Push</button>
       </div>
       <Footer domain={domain} origin={origin} />
-    </main>
+    </PageBox>
   )
 }
 

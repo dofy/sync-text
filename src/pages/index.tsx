@@ -1,13 +1,10 @@
 import Footer from "@/components/Footer";
+import PageBox from "@/components/PageBox";
 import QRCode from "@/components/QRCode";
-import { Azeret_Mono } from "next/font/google";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-const font = Azeret_Mono({
-  subsets: ['latin'],
-})
 
 const Page: React.FC<IPageProps> = ({ title, uuid }) => {
   const [origin, setOrigin] = useState<string>('')
@@ -20,16 +17,16 @@ const Page: React.FC<IPageProps> = ({ title, uuid }) => {
   }, [])
 
   return (
-    <main className={`${font.className} flex min-h-screen flex-col items-center justify-between p-24`}>
-      <div className="text-3xl my-3 underline underline-offset-8">{title}</div>
-      <div>
-        <QRCode size="medium" value={origin} />
-      </div>
+    <PageBox>
+      <div className="text-4xl my-3 underline underline-offset-8">{title}</div>
+      <QRCode size="medium" value={origin} />
       <div className="text-xl flex-grow self-center">
-        <Link href={`/sync/${uuid}`}> Enter &gt;&gt; </Link>
+        <Link
+          className="hover:underline p-4 block"
+          href={`/sync/${uuid}`}> Enter &gt;&gt; </Link>
       </div>
       <Footer domain={domain} origin={origin} />
-    </main>
+    </PageBox>
   )
 }
 
