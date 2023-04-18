@@ -8,7 +8,7 @@ module.exports = {
       max_memory_restart: "1G",
       ignore_watch: ["public"],
       env: {
-        PORT: 9000,
+        PORT: 9101,
         watch: true,
         NODE_ENV: "development",
       },
